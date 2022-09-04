@@ -1,7 +1,7 @@
 import { useFormik } from "formik";
 import React, { useState } from "react";
 import { Footer } from "../components/Footer";
-import { Navbar } from "../components/Navbar";
+import { Navbar } from "../components/Navbar/Navbar";
 import { DayPicker } from "react-day-picker";
 import { ListingPanel } from "../components/ListingPanel";
 import { mergeNftsWithMetadata } from "../lib/fetchNft";
