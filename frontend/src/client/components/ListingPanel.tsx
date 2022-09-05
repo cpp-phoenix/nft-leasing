@@ -3,7 +3,7 @@ import { NftWithMetadata, Avaliability, AvaliabilityStatus } from "../../../type
 import upArrow from "../../../static/up-arrow.svg";
 import downArrow from "../../../static/down-arrow.svg";
 
-export const ListingPanel = ({ nft, pureNft = false }: { nft: NftWithMetadata; pureNft?: boolean }) => {
+export const ListingPanel = ({ nft, pureNft = false, desc = true } : { nft: NftWithMetadata; pureNft?: boolean, desc?: boolean }) => {
   const [viewPropertyTab, setViewPropertyTab] = useState(false);
   
   const renderAvaliability = (availability: Avaliability) => {
@@ -36,11 +36,12 @@ export const ListingPanel = ({ nft, pureNft = false }: { nft: NftWithMetadata; p
   return (
     <>
     { nft ? ( 
-    <div className="rounded-lg bg-white">
+    <div className="hover:cursor-pointer rounded-lg bg-white">
       <div
         className="imageContainer w-full overflow-auto bg-white bg-center">
         <img src={nft.image} className="rounded-lg w-full h-full" />
       </div>
+      { desc &&
       <div className="border border-gray-200 rounded-lg shadow-md mt-4">
         <div className="font-bold text-slate-800 text-xl py-3 px-6 border-b border-gray-200">Description</div>
         <div className="bg-gray-50 w-full flex items-center px-6 py-4">
@@ -49,6 +50,7 @@ export const ListingPanel = ({ nft, pureNft = false }: { nft: NftWithMetadata; p
           {!pureNft && <p>ETH({nft.nft.listing.pricePerDay}) / day</p>}
         </div>
       </div>
+      }
       { pureNft &&
       <div className="border border-gray-200 rounded-lg shadow-md mt-4">
         <div onClick={() => setViewPropertyTab(!viewPropertyTab)} className="cursor-pointer flex flex-row items-center font-bold text-slate-800 text-xl py-3 px-6 border-b border-gray-200">
@@ -77,10 +79,7 @@ export const ListingPanel = ({ nft, pureNft = false }: { nft: NftWithMetadata; p
       </div>
       } 
     </div>) : (
-    <div className="rounded-lg bg-white shadow h-full">
-      <div
-        className="imageContainer w-full overflow-auto bg-center bg-cover">
-      </div>
+    <div className="rounded-lg bg-white shadow h-[500px]">
       <div>
         <div className="w-full flex items-center pb-2">
           <div className="flex-grow pl-1"></div>
