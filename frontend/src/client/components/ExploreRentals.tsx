@@ -7,12 +7,14 @@ import { useMoralisQuery } from "react-moralis";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { mergeNftsWithMetadata } from "../lib/fetchNft";
+import upArrow from "../../../static/up-arrow.svg";
+import downArrow from "../../../static/down-arrow.svg";
 
 export const ExploreRentals = () => {
-  const [dateFilterVisible, setDateFilterVisible] = useState(false);
+  const [dateFilterVisible, setDateFilterVisible] = useState(true);
   const [dateRange, setDateRange] = useState<[null | Date, null | Date]>([null, null]);
   const [startDate, endDate] = dateRange;
-  const [costFilterVisible, setCostFilterVisible] = useState(false);
+  const [costFilterVisible, setCostFilterVisible] = useState(true);
   const [startCost, setStartCost] = useState<null | number>(null);
   const [endCost, setEndCost] = useState<null | number>(null);
 
@@ -21,6 +23,10 @@ export const ExploreRentals = () => {
 
   const [selectedNft, setSelectedNft] = useState<NftWithMetadata | null>(null);
 
+  const [dateFilterToggle, setDateFilterToggle] = useState(true);
+
+  const [costFilterToggle, setCostFilterToggle] = useState(false);
+
   useEffect(() => {
     const nftListings: Nft[] = rawNftListings.map(nft => {
       return {
@@ -28,6 +34,7 @@ export const ExploreRentals = () => {
         specification: nft.attributes.nftSpecification,
       };
     });
+    console.log("NFT Details: ", nftListings);
     mergeNftsWithMetadata(nftListings).then(nftsWithMetadata => setNfts(nftsWithMetadata));
   }, [rawNftListings]);
 
@@ -49,38 +56,31 @@ export const ExploreRentals = () => {
     }
 
     return (
-      <div className="relative">
-        <button
-          className="border-2 border-black bg-slate-200  py-1 px-2 text-sm"
-          onClick={() => setDateFilterVisible(!dateFilterVisible)}
-        >
-          {text}
-        </button>
-        {startDate && endDate && (
-          <button
-            className="border-2 border-black bg-slate-200  py-1 px-2 text-sm ml-2"
-            onClick={() => setDateRange([null, null])}
-          >
-            Clear dates
-          </button>
-        )}
+      <div className="rounded-b-lg h-full border border-gray-100 bg-gray-50">
         {dateFilterVisible && (
-          <div className="absolute">
+          <div className="flex flex-col items-center py-4">
             <DatePicker
               selectsRange={true}
               startDate={startDate}
               endDate={endDate}
               onChange={(update: any) => {
                 setDateRange(update);
-                const [start, end] = update;
-                if (start && end) {
-                  setDateFilterVisible(false);
-                }
               }}
               minDate={new Date()}
               showDisabledMonthNavigation
               inline
             />
+            {startDate && endDate && (
+          <div className="flex flex-row">
+            <span className="text-sm">From {startDate.toLocaleDateString()} to {endDate.toLocaleDateString()}</span>
+          <button
+            className="border-2 border-black bg-slate-200  py-1 px-2 text-sm ml-2"
+            onClick={() => setDateRange([null, null])}
+          >
+            Clear dates
+          </button>
+          </div>
+        )}
           </div>
         )}
       </div>
@@ -98,27 +98,26 @@ export const ExploreRentals = () => {
       text = "Between ETH(" + startCost + ") - ETH(" + endCost + ")";
     }
     return (
-      <div className="relative">
-        <button
-          className="border-2 border-black bg-slate-200  py-1 px-2 text-sm"
-          onClick={() => setCostFilterVisible(!costFilterVisible)}
-        >
-          {text}
-        </button>
+      <div className="rounded-b-lg h-full border border-gray-100 bg-gray-50">
         {costFilterVisible && (
-          <div className="absolute">
-            <input
+          <div className="flex flex-row justify-center items-center h-full">
+            <div className="rounded-lg border-2 border-gray-200">
+            <input className="w-20"
               type="number"
-              placeholder="At least"
+              placeholder="Min"
               value={startCost ? startCost : ""}
               onChange={event => setStartCost(event.target.valueAsNumber)}
             />
-            <input
+            </div>
+            <span className="font-bold px-2">to</span>
+            <div className="border-2">
+            <input className="w-20"
               type="number"
-              placeholder="At most"
+              placeholder="Max"
               value={endCost ? endCost : ""}
               onChange={event => setEndCost(event.target.valueAsNumber)}
             />
+            </div>
           </div>
         )}
       </div>
@@ -151,17 +150,40 @@ export const ExploreRentals = () => {
           <RentDetails nft={selectedNft} />
         </Popup>
       )}
-      <div className="container">
-        <div className="flex pb-3">
-          <div className="mr-4">{renderDateFilter()}</div>
-          <div>{renderCostFilter()}</div>
-        </div>
-        <div className="grid grid-cols-4 gap-4 w-full">
-          {filteredList.map((nft, index) => (
-            <div onClick={() => setSelectedNft(nft)} key={index}>
-              <ListingPanel nft={nft} />
+      <div className="flex-1 w-full h-full flex flex-row p-6">
+        <div className="w-3/12 h-3/6 px-4 py-2">
+            <p className="font-bold text-lg border-b border-gray-200 mb-6">Filters</p>
+            <div className="my-2">
+              <div onClick={() => setDateFilterToggle(!dateFilterToggle)} className={`${(dateFilterToggle ? "bg-gray-50" : "hover:bg-gray-50")  + " hover:cursor-pointer rounded-t-lg flex flex-row items-center px-4 py-2"}`}>
+                <span className="font-semibold text-lg flex-1">Date</span>
+                <img src={ dateFilterToggle ? upArrow : downArrow} className="w-3 h-3" />
+              </div>
+              { dateFilterToggle && 
+                <div className="w-full h-content"> 
+                  {renderDateFilter()}
+                </div>
+              }
             </div>
-          ))}
+            <div className="my-2">
+              <div onClick={() => setCostFilterToggle(!costFilterToggle)} className={`${(costFilterToggle ? "bg-gray-50" : "hover:bg-gray-50")  + " hover:cursor-pointer rounded-t-lg flex flex-row items-center px-4 py-2"}`}>
+                <span className="font-semibold text-lg flex-1">Cost</span>
+                <img src={ costFilterToggle ? upArrow : downArrow} className="w-3 h-3" />
+              </div>
+              { costFilterToggle && 
+                <div className="w-full h-20"> 
+                  {renderCostFilter()}
+                </div>
+              }
+            </div>
+        </div>
+        <div className="h-full w-9/12">
+          <div className="grid grid-cols-3 gap-4 w-full">
+            {filteredList.map((nft, index) => (
+              <div onClick={() => setSelectedNft(nft)} key={index}>
+                <ListingPanel nft={nft} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </>

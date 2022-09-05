@@ -20,6 +20,7 @@ export interface AvaliableDates {
 }
 
 export interface Listing {
+    owner: string;
     description: string;
     datesForRent: AvaliableDates[];
     pricePerDay: number;

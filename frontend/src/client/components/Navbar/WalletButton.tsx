@@ -4,7 +4,6 @@ import { useMoralis } from "react-moralis";
 import crossImg from "../../../../static/cross.png";
 
 function getAddress(accountData: any): string {
-  console.log("Data dd: ", accountData);
   let address: string = accountData.address;
   if (address) {
     return address?.substring(0, 6) + "..." + address?.substring(address.length - 4, address.length);
@@ -74,7 +73,6 @@ const WalletButton = () => {
     );
   };
 
-  console.log("Chain details;", activeChain);
   return (
     <div className="mr-2 flex flex-row justify-end w-content items-center w-content">
       {viewWalletSelect ? <WalletDiv /> : <></>}

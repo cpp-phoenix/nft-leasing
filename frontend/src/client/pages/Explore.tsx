@@ -8,7 +8,7 @@ const Explore = () => {
   const { name, setName } = useAppContext();
 
   return (
-    <div className="flex bg-white-100 items-center flex-col justify-between h-screen">
+    <div className="flex bg-white-100 items-center flex-col justify-between min-h-screen">
       <Navbar />
       <ExploreRentals />
       <Footer />
