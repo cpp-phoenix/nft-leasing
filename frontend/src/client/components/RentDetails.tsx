@@ -17,7 +17,7 @@ const cancelListing = async (nft: NftWithMetadata) => {
     limitPerPage: 1,
     skipPage: 0
   }
-  const rawNftListings = fetchDataFromMoralis(queryObj);
+  const rawNftListings = [];
 
   console.log("Raw NFt Listing: ", rawNftListings);
 }

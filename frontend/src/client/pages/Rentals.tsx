@@ -18,75 +18,58 @@ const PaginatedNFTs = ({queryObj, accountAddress=""} : {queryObj:Query; accountA
 
   // let nftListingsData = [];
   // let nftListingsData = 
+  const [loading, setLoading] = useState(true);
   const { Moralis } = useMoralis();
   const [nftListingsData, setNftListingsData] = useState([]);
   const [nfts, setNfts] = useState<NftWithMetadata[]>([]);
   const [selectedNft, setSelectedNft] = useState<NftWithMetadata | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
         const query = new Moralis.Query('Listing');
-        query.equalTo('listing.owner', accountAddress);
+        query.equalTo('listing.owner', accountAddress).limit(queryObj.limitPerPage).skip(queryObj.limitPerPage * queryObj.skipPage);
         await query.find()
         .then(response => {
-          console.log(response[0].attributes)
-          setNftListingsData(response)
+          console.log(response);
+          setNftListingsData(response);
         });       
       }
       catch (error) {
         console.log(error);
       }
-      setLoading(false);
     }
-    fetchData()
-
-    // let isMounted = true;
-
-    // setLoading(true);
-
-    // async function fetchData() {
-    //   let result = fetchDataFromMoralis(queryObj);
-
-    //   // 👇️ only update state if component is mounted
-    //   if (isMounted) {
-    //     setNftListingsData(result);
-    //   }
-    // }
-
-    // fetchData();
-
-    // return () => {
-    //   // 👇️ when component unmounts, set isMounted to false
-    //   isMounted = false;
-    // };
+    fetchData();
   },[queryObj])
 
-  // useEffect(() => {
-  //   const nftListings: Nft[] = nftListingsData.map(nft => {
-  //     return {
-  //       listing: nft.attributes.listing,
-  //       specification: nft.attributes.nftSpecification,
-  //       objectId: nft.attributes.objectId,
-  //     };
-  //   });
-  //   mergeNftsWithMetadata(nftListings).then(nftsWithMetadata => setNfts(nftsWithMetadata));
-  //   setLoading(false);
-  // }, [nftListingsData]);
+  useEffect(() => {
+    const nftListings: Nft[] = nftListingsData.map(nft => {
+      return {
+        listing: nft.attributes.listing,
+        specification: nft.attributes.nftSpecification,
+        objectId: nft.attributes.objectId,
+      };
+    });
+    const nftsWithMetadata = mergeNftsWithMetadata(nftListings).then(nftsWithMetadata => {
+      setNfts(nftsWithMetadata);
+      setLoading(false);
+    });
+  }, [nftListingsData]);
 
   return (
     <> {
     loading ? (
-    <ColorRing
-    visible={true}
-    height="80"
-    width="80"
-    ariaLabel="blocks-loading"
-    wrapperStyle={{}}
-    wrapperClass="blocks-wrapper"
-    colors={['#e15b64', '#e15b64', '#e15b64', '#e15b64', '#e15b64']}/>
+    <div className="w-full ">
+      <ColorRing
+      visible={true}
+      height="80"
+      width="80"
+      ariaLabel="blocks-loading"
+      wrapperStyle={{}}
+      wrapperClass="blocks-wrapper"
+      colors={['#e15b64', '#e15b64', '#e15b64', '#e15b64', '#e15b64']}/>
+    </div>
     ) : (
       <div>
         {
