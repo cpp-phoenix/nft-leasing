@@ -31,6 +31,7 @@ export interface Nft {
     contract?: RentContract;
     listing: Listing;
     specification: NftSpecification;
+    objectId: string;
 }
 
 export enum AvaliabilityStatus {

@@ -7,10 +7,12 @@ import { useMoralisQuery } from "react-moralis";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { mergeNftsWithMetadata } from "../lib/fetchNft";
+import { useAccount } from "wagmi";
 import upArrow from "../../../static/up-arrow.svg";
 import downArrow from "../../../static/down-arrow.svg";
 
 export const ExploreRentals = () => {
+  const { data: accountData } = useAccount();
   const [dateFilterVisible, setDateFilterVisible] = useState(true);
   const [dateRange, setDateRange] = useState<[null | Date, null | Date]>([null, null]);
   const [startDate, endDate] = dateRange;
@@ -18,7 +20,7 @@ export const ExploreRentals = () => {
   const [startCost, setStartCost] = useState<null | number>(null);
   const [endCost, setEndCost] = useState<null | number>(null);
 
-  const { data: rawNftListings, error, isLoading } = useMoralisQuery("Listing", query => query.limit(8), [], {});
+  const { data: rawNftListings, error, isLoading } = useMoralisQuery("Listing", query => query.limit(15), [], {});
   const [nfts, setNfts] = useState<NftWithMetadata[]>([]);
 
   const [selectedNft, setSelectedNft] = useState<NftWithMetadata | null>(null);
@@ -32,6 +34,7 @@ export const ExploreRentals = () => {
       return {
         listing: nft.attributes.listing,
         specification: nft.attributes.nftSpecification,
+        objectId: nft.attributes.objectId,
       };
     });
     console.log("NFT Details: ", nftListings);
@@ -147,7 +150,7 @@ export const ExploreRentals = () => {
     <>
       {selectedNft && (
         <Popup closeHandler={() => setSelectedNft(null)}>
-          <RentDetails nft={selectedNft} />
+          <RentDetails nft={selectedNft}  accountAddress={accountData?.address}/>
         </Popup>
       )}
       <div className="flex-1 w-full h-full flex flex-row p-6">
