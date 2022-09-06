@@ -7,7 +7,7 @@ import { ListingPanel } from "../components/ListingPanel";
 import { mergeNftsWithMetadata } from "../lib/fetchNft";
 import { useMoralis } from "react-moralis";
 import { NftWithMetadata, Nft } from "../../../types/nftTypes.js";
-import { useAccount,useConnect } from "wagmi";
+import { useAccount, useConnect } from "wagmi";
 
 import "react-day-picker/dist/style.css";
 
@@ -43,11 +43,14 @@ const List = () => {
 
   const submitListing = (nft: Nft) => {
     const listing = Listing.create(nft);
-    listing.save().then((listing: any) => {
-      console.log("Save Successfull!!");
-    },(e: any) => {
-      console.log(e);
-    });
+    listing.save().then(
+      (listing: any) => {
+        console.log("Save Successfull!!");
+      },
+      (e: any) => {
+        console.log(e);
+      },
+    );
   };
 
   const { handleSubmit, handleChange, values, touched } = useFormik({
@@ -59,7 +62,7 @@ const List = () => {
       collateral: 0,
     },
     onSubmit: values => {
-      if(isConnected && accountData?.address) {
+      if (isConnected && accountData?.address) {
         submitListing({
           listing: {
             owner: accountData?.address,
@@ -188,8 +191,8 @@ const List = () => {
                   className={inputStyle}
                   required
                 ></input>
-                </FormSection>
-                <FormSection>
+              </FormSection>
+              <FormSection>
                 <label className={labelStyle}>Collateral</label>
                 <input
                   id="collateral"
@@ -199,7 +202,8 @@ const List = () => {
                   min="0"
                   onChange={handleChange}
                   value={values.collateral}
-                  className={inputStyle} required
+                  className={inputStyle}
+                  required
                 ></input>
               </FormSection>
               {/* <FormSection center>
@@ -210,7 +214,11 @@ const List = () => {
                 <label className={labelStyle}>Collateral Payback</label>
                 <input type="text" className={inputStyle}></input>
               </FormSection> */}
-              <button className={`${(validNft ? 'bg-indigo-800' :'cursor-not-allowed bg-gray-500') + buttonBaseStyle}`} disabled={!validNft} type="submit">
+              <button
+                className={`${(validNft ? "bg-indigo-800" : "cursor-not-allowed bg-gray-500") + buttonBaseStyle}`}
+                disabled={!validNft}
+                type="submit"
+              >
                 List my Rental!
               </button>
             </form>

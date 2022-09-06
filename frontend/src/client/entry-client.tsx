@@ -9,7 +9,8 @@ ReactDOM.hydrate(
   <React.StrictMode>
     <MoralisProvider
       serverUrl="https://iaoe2dqojqh4.usemoralis.com:2053/server"
-      appId="VOGFRxxVN2xb8EQCcXP1Q9jU3DDRHyQ3eSr2ZZAG">
+      appId="VOGFRxxVN2xb8EQCcXP1Q9jU3DDRHyQ3eSr2ZZAG"
+    >
       <BrowserRouter>
         <App />
       </BrowserRouter>

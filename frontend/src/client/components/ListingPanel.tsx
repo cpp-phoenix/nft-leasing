@@ -3,9 +3,17 @@ import { NftWithMetadata, Avaliability, AvaliabilityStatus } from "../../../type
 import upArrow from "../../../static/up-arrow.svg";
 import downArrow from "../../../static/down-arrow.svg";
 
-export const ListingPanel = ({ nft, pureNft = false, desc = true } : { nft: NftWithMetadata; pureNft?: boolean, desc?: boolean }) => {
+export const ListingPanel = ({
+  nft,
+  pureNft = false,
+  desc = true,
+}: {
+  nft: NftWithMetadata;
+  pureNft?: boolean;
+  desc?: boolean;
+}) => {
   const [viewPropertyTab, setViewPropertyTab] = useState(false);
-  
+
   const renderAvaliability = (availability: Avaliability) => {
     let statusText;
     switch (availability.status) {
@@ -35,59 +43,60 @@ export const ListingPanel = ({ nft, pureNft = false, desc = true } : { nft: NftW
 
   return (
     <>
-    { nft ? ( 
-    <div className="hover:cursor-pointer rounded-lg bg-white">
-      <div
-        className="imageContainer w-full overflow-auto bg-white bg-center">
-        <img src={nft.image} className="rounded-lg w-full h-full" />
-      </div>
-      { desc &&
-      <div className="border border-gray-200 rounded-lg shadow-md mt-4">
-        <div className="font-bold text-slate-800 text-xl py-3 px-6 border-b border-gray-200">Description</div>
-        <div className="bg-gray-50 w-full flex items-center px-6 py-4">
-          <h1 className="text-lg font-semibold">{nft.name}</h1>
-          <div className="flex-grow pl-1"></div>
-          {!pureNft && <p>ETH({nft.nft.listing.pricePerDay}) / day</p>}
-        </div>
-      </div>
-      }
-      { pureNft &&
-      <div className="border border-gray-200 rounded-lg shadow-md mt-4">
-        <div onClick={() => setViewPropertyTab(!viewPropertyTab)} className="cursor-pointer flex flex-row items-center font-bold text-slate-800 text-xl py-3 px-6 border-b border-gray-200">
-          <span className="flex-1">Properties</span>
-          <img src={viewPropertyTab ? upArrow : downArrow} className="w-3 h-3" />
-        </div>
-        {
-          viewPropertyTab && 
-          (<div className="bg-gray-50 w-full px-6 py-4">
-            {nft.attributes.map(attribute => (
-              <div
-                className="inline-block bg-slate-200 px-2 py-1 rounded-xl text-xs mr-2 mb-2"
-                key={attribute.traitType + attribute.value}
-              >
-                <span className="font-bold">{attribute.traitType}</span>: {attribute.value}
+      {nft ? (
+        <div className="hover:cursor-pointer rounded-lg bg-white">
+          <div className="imageContainer w-full overflow-auto bg-white bg-center">
+            <img src={nft.image} className="rounded-lg w-full h-full" />
+          </div>
+          {desc && (
+            <div className="border border-gray-200 rounded-lg shadow-md mt-4">
+              <div className="font-bold text-slate-800 text-xl py-3 px-6 border-b border-gray-200">Description</div>
+              <div className="bg-gray-50 w-full flex items-center px-6 py-4">
+                <h1 className="text-lg font-semibold">{nft.name}</h1>
+                <div className="flex-grow pl-1"></div>
+                {!pureNft && <p>ETH({nft.nft.listing.pricePerDay}) / day</p>}
               </div>
-            ))}
-            {!pureNft && (
-              <>
-                <p>{nft.nft.listing.description}</p>
-                <div className="pt-2">{renderAvaliability(nft.avaliability)}</div>
-              </>
-            )}
-          </div>)
-        } 
-      </div>
-      } 
-    </div>) : (
-    <div className="rounded-lg bg-white shadow h-[500px]">
-      <div>
-        <div className="w-full flex items-center pb-2">
-          <div className="flex-grow pl-1"></div>
+            </div>
+          )}
+          {pureNft && (
+            <div className="border border-gray-200 rounded-lg shadow-md mt-4">
+              <div
+                onClick={() => setViewPropertyTab(!viewPropertyTab)}
+                className="cursor-pointer flex flex-row items-center font-bold text-slate-800 text-xl py-3 px-6 border-b border-gray-200"
+              >
+                <span className="flex-1">Properties</span>
+                <img src={viewPropertyTab ? upArrow : downArrow} className="w-3 h-3" />
+              </div>
+              {viewPropertyTab && (
+                <div className="bg-gray-50 w-full px-6 py-4">
+                  {nft.attributes.map(attribute => (
+                    <div
+                      className="inline-block bg-slate-200 px-2 py-1 rounded-xl text-xs mr-2 mb-2"
+                      key={attribute.traitType + attribute.value}
+                    >
+                      <span className="font-bold">{attribute.traitType}</span>: {attribute.value}
+                    </div>
+                  ))}
+                  {!pureNft && (
+                    <>
+                      <p>{nft.nft.listing.description}</p>
+                      <div className="pt-2">{renderAvaliability(nft.avaliability)}</div>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
-      </div>
-    </div>
-    )
-    }
+      ) : (
+        <div className="rounded-lg bg-white shadow h-[500px]">
+          <div>
+            <div className="w-full flex items-center pb-2">
+              <div className="flex-grow pl-1"></div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

@@ -10,6 +10,7 @@ import { mergeNftsWithMetadata } from "../lib/fetchNft";
 import { useAccount } from "wagmi";
 import upArrow from "../../../static/up-arrow.svg";
 import downArrow from "../../../static/down-arrow.svg";
+import PaginatedNFTs from "../components/PaginatedNFTsPanel";
 
 export const ExploreRentals = () => {
   const { data: accountData } = useAccount();
@@ -37,7 +38,6 @@ export const ExploreRentals = () => {
         objectId: nft.attributes.objectId,
       };
     });
-    console.log("NFT Details: ", nftListings);
     mergeNftsWithMetadata(nftListings).then(nftsWithMetadata => setNfts(nftsWithMetadata));
   }, [rawNftListings]);
 
@@ -74,16 +74,18 @@ export const ExploreRentals = () => {
               inline
             />
             {startDate && endDate && (
-          <div className="flex flex-row">
-            <span className="text-sm">From {startDate.toLocaleDateString()} to {endDate.toLocaleDateString()}</span>
-          <button
-            className="border-2 border-black bg-slate-200  py-1 px-2 text-sm ml-2"
-            onClick={() => setDateRange([null, null])}
-          >
-            Clear dates
-          </button>
-          </div>
-        )}
+              <div className="flex flex-row">
+                <span className="text-sm">
+                  From {startDate.toLocaleDateString()} to {endDate.toLocaleDateString()}
+                </span>
+                <button
+                  className="border-2 border-black bg-slate-200  py-1 px-2 text-sm ml-2"
+                  onClick={() => setDateRange([null, null])}
+                >
+                  Clear dates
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -105,21 +107,23 @@ export const ExploreRentals = () => {
         {costFilterVisible && (
           <div className="flex flex-row justify-center items-center h-full">
             <div className="rounded-lg border-2 border-gray-200">
-            <input className="w-20"
-              type="number"
-              placeholder="Min"
-              value={startCost ? startCost : ""}
-              onChange={event => setStartCost(event.target.valueAsNumber)}
-            />
+              <input
+                className="w-20"
+                type="number"
+                placeholder="Min"
+                value={startCost ? startCost : ""}
+                onChange={event => setStartCost(event.target.valueAsNumber)}
+              />
             </div>
             <span className="font-bold px-2">to</span>
             <div className="border-2">
-            <input className="w-20"
-              type="number"
-              placeholder="Max"
-              value={endCost ? endCost : ""}
-              onChange={event => setEndCost(event.target.valueAsNumber)}
-            />
+              <input
+                className="w-20"
+                type="number"
+                placeholder="Max"
+                value={endCost ? endCost : ""}
+                onChange={event => setEndCost(event.target.valueAsNumber)}
+              />
             </div>
           </div>
         )}
@@ -150,43 +154,46 @@ export const ExploreRentals = () => {
     <>
       {selectedNft && (
         <Popup closeHandler={() => setSelectedNft(null)}>
-          <RentDetails nft={selectedNft}  accountAddress={accountData?.address}/>
+          <RentDetails nft={selectedNft} accountAddress={accountData?.address} />
         </Popup>
       )}
       <div className="flex-1 w-full h-full flex flex-row p-6">
         <div className="w-3/12 h-3/6 px-4 py-2">
-            <p className="font-bold text-lg border-b border-gray-200 mb-6">Filters</p>
-            <div className="my-2">
-              <div onClick={() => setDateFilterToggle(!dateFilterToggle)} className={`${(dateFilterToggle ? "bg-gray-50" : "hover:bg-gray-50")  + " hover:cursor-pointer rounded-t-lg flex flex-row items-center px-4 py-2"}`}>
-                <span className="font-semibold text-lg flex-1">Date</span>
-                <img src={ dateFilterToggle ? upArrow : downArrow} className="w-3 h-3" />
-              </div>
-              { dateFilterToggle && 
-                <div className="w-full h-content"> 
-                  {renderDateFilter()}
-                </div>
-              }
+          <p className="font-bold text-lg border-b border-gray-200 mb-6">Filters</p>
+          <div className="my-2">
+            <div
+              onClick={() => setDateFilterToggle(!dateFilterToggle)}
+              className={`${
+                (dateFilterToggle ? "bg-gray-50" : "hover:bg-gray-50") +
+                " hover:cursor-pointer rounded-t-lg flex flex-row items-center px-4 py-2"
+              }`}
+            >
+              <span className="font-semibold text-lg flex-1">Date</span>
+              <img src={dateFilterToggle ? upArrow : downArrow} className="w-3 h-3" />
             </div>
-            <div className="my-2">
-              <div onClick={() => setCostFilterToggle(!costFilterToggle)} className={`${(costFilterToggle ? "bg-gray-50" : "hover:bg-gray-50")  + " hover:cursor-pointer rounded-t-lg flex flex-row items-center px-4 py-2"}`}>
-                <span className="font-semibold text-lg flex-1">Cost</span>
-                <img src={ costFilterToggle ? upArrow : downArrow} className="w-3 h-3" />
-              </div>
-              { costFilterToggle && 
-                <div className="w-full h-20"> 
-                  {renderCostFilter()}
-                </div>
-              }
+            {dateFilterToggle && <div className="w-full h-content">{renderDateFilter()}</div>}
+          </div>
+          <div className="my-2">
+            <div
+              onClick={() => setCostFilterToggle(!costFilterToggle)}
+              className={`${
+                (costFilterToggle ? "bg-gray-50" : "hover:bg-gray-50") +
+                " hover:cursor-pointer rounded-t-lg flex flex-row items-center px-4 py-2"
+              }`}
+            >
+              <span className="font-semibold text-lg flex-1">Cost</span>
+              <img src={costFilterToggle ? upArrow : downArrow} className="w-3 h-3" />
             </div>
+            {costFilterToggle && <div className="w-full h-20">{renderCostFilter()}</div>}
+          </div>
         </div>
         <div className="h-full w-9/12">
-          <div className="grid grid-cols-3 gap-4 w-full">
-            {filteredList.map((nft, index) => (
-              <div onClick={() => setSelectedNft(nft)} key={index}>
-                <ListingPanel nft={nft} />
-              </div>
-            ))}
-          </div>
+          <PaginatedNFTs
+            queryTable={"Listing"}
+            accountAddress={accountData?.address}
+            limitPerPage={8}
+            limitPerRow={3}
+          />
         </div>
       </div>
     </>
